@@ -5,54 +5,55 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:should_rebuild/should_rebuild.dart';
-import 'package:view_model/providers/home_provider.dart';
+import 'package:view_model/base/view_model.dart';
+import 'package:view_model/pages/shop_detail_list.dart';
+import 'package:view_model/providers/home_view_model.dart';
+import 'package:view_model/providers/shop_detail_provider.dart';
+import 'package:view_model/providers/shop_provider.dart';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+
+
+
 class _HomePageState extends State<HomePage> {
+  int counter = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       body: Container(
         constraints: BoxConstraints.expand(),
         child: SafeArea(
-          child: Column(
+          child:Column(
             children: <Widget>[
-              Container(
-                height: 100,
-                child: Center(
-                  child: Text('首页'),
-                ),
+              Consumer<HomeViewModel>(
+                builder: (context,hv,_){
+                  return Text(hv.state.age.toString());
+                },
               ),
-              Row(
-                children: <Widget>[
-                  Text('输入boss名字'),
-                  Expanded(
-                    child: Consumer<HomeProvider>(
-                      builder: (context,homeProvider,child){
-                        return TextField(
-                          onChanged: homeProvider.setName,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue)
-                              )
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-              Consumer<HomeProvider>(
-                builder: (context,homeProvider,child){
-                  return Text('boss的名字是${homeProvider.bossName}');
+              RaisedButton(
+                child: Icon(Icons.add),
+                onPressed: (){
+                  Provider.of<HomeViewModel>(context,listen: false).dispatch(Event(event: HomeEvent.setBossAge,payload: "4"));
                 },
               )
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_a_photo),
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShopDetailPage()));
+        },
       ),
     );
   }
