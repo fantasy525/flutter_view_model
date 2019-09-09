@@ -1,4 +1,6 @@
 // created by ZuoXiaoFei at 2019-09-09
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:view_model/base/view_model.dart';
 
@@ -18,7 +20,7 @@ class ShopDetailViewModel extends ViewModel<ShopDetailEvent,ShopDetailState>{
   ShopDetailState state = ShopDetailState();
 
   @override
-  void mapEventToHandler(Event event, commit) {
+  void mapEventToHandler(Event event, commit, [Completer completer]) {
     // TODO: implement mapEventToHandler
     switch(event.event){
       case ShopDetailEvent.setContent:

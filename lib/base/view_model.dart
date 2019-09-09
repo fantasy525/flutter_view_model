@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 typedef Commit = void Function();
+
+typedef OnSuccess = void Function();
+typedef OnError = void Function();
 ///[event] 枚举类型
 ///[payload] 类比安卓中的Bundle概念
 class Event {
@@ -64,7 +67,7 @@ abstract class ViewModel<EnumEvent,State> with ChangeNotifier {
 
   /// event映射，从event映射到不同的事件handler去处理
   @protected
-  void mapEventToHandler(Event event,Commit commit);
+  void mapEventToHandler(Event event,Commit commit,[Completer completer]);
 
   /// 通知UI层的变化
   @protected
@@ -72,9 +75,11 @@ abstract class ViewModel<EnumEvent,State> with ChangeNotifier {
     super.notifyListeners();
   }
   /// UI层暴露的方法，通过此方法派发事件
-  void dispatch(Event event){
+  Future<R> dispatch<R>(Event event){
+    Completer<R> _completer = Completer<R>();
     print('{event: ${event.event}, payload: ${event.payload}}');
-    mapEventToHandler(event,_commit);
+    mapEventToHandler(event,_commit,_completer);
+    return _completer.future;
   }
 
   /// 重写此方法，防止在UI层直接调用这个方法

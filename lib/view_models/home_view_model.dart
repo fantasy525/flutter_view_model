@@ -1,4 +1,5 @@
 // created by ZuoXiaoFei at 2019-09-05
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -23,27 +24,30 @@ class HomeViewModel extends ViewModel<HomeEvent,HomeState>{
   HomeViewModel({this.toDoViewModel});
   HomeState state = HomeState(bossName: '',age: 0);
 
+  _setBossName(Event event,Commit commit,Completer completer){
+    state.bossName = event.payload.getString("bossName");
+    commit();
+    completer.complete();
+  }
+
+  _setBossAge(Event event,Commit commit,Completer completer){
+    state.age = event.payload.getInt("age");
+    commit();
+    completer.complete();
+  }
+
   @override
-  void mapEventToHandler(Event event, commit) {
-    // TODO: implement mapEvent
+  void mapEventToHandler(Event event, commit, [Completer completer]) {
+    // TODO: implement mapEventToHandler
     switch(event.event){
       case HomeEvent.setBossName:
-        _setBossName(event,commit);
+        _setBossName(event,commit,completer);
         break;
       case HomeEvent.setBossAge:
-        _setBossAge(event, commit);
+        _setBossAge(event,commit,completer);
         break;
     }
   }
 
-  _setBossName(Event event,Commit commit){
-    state.bossName = event.payload.getString("bossName");
-    commit();
-  }
-
-  _setBossAge(Event event,Commit commit){
-    state.age = event.payload.getInt("age");
-    commit();
-  }
 
 }

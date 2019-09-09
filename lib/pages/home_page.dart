@@ -42,9 +42,12 @@ class _HomePageState extends State<HomePage> {
                 child: Icon(Icons.add),
                 onPressed: (){
                   Provider.of<HomeViewModel>(context,listen: false)
-                      .dispatch(Event(
+                      .dispatch<bool>(Event(
                       event: HomeEvent.setBossAge,
-                      payload: PayLoad()..putInt("age", ++counter)));
+                      payload: PayLoad()..putInt("age", ++counter)),
+                  ).then((res){
+                    print(res);
+                  });
                 },
               )
             ],
