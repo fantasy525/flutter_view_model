@@ -3,40 +3,34 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:view_model/base/store.dart';
 import 'package:view_model/pages/home_page.dart';
-import 'package:view_model/providers/home_view_model.dart';
-import 'package:view_model/providers/shop_detail_provider.dart';
-import 'package:view_model/providers/shop_provider.dart';
-import 'package:view_model/providers/todo_view_model.dart';
-
+import 'package:get_it/get_it.dart';
+import 'package:view_model/view_models/home_view_model.dart';
 import 'base/view_model.dart';
 
 void main(){
 
-
-  runApp(MyApp());
+  final store = Store(
+      viewModels: {
+        HomeViewModel:(inject)=>HomeViewModel(),
+      }
+  );
+  runApp(MyApp(store: store,));
 }
 
 
 class MyApp extends StatelessWidget {
+
+  final Store store;
+  MyApp({this.store});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-//    Store store = Store(
-//      builders: {
-//        HomeViewModel:(inject) => HomeViewModel(
-//          toDoViewModel:  inject.getViewModel(_viewModelFactory)<ToDoViewModel>()
-//        )
-//      }
-//    );
+
+
+
     return   MultiProvider(
       providers: [
-
-        ChangeNotifierProvider<HomeViewModel>(
-          builder: (context) => HomeViewModel(),
-        ),
-        ChangeNotifierProxyProvider<HomeViewModel,ShopDetailProvider>(
-          builder: (context,homeViewModel,_) => ShopDetailProvider(shopProvider: homeViewModel),
-        ),
+       ChangeNotifierProvider(builder: (context) => store.get<HomeViewModel>(),)
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

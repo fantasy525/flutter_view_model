@@ -11,7 +11,7 @@ enum TodoEvent{
   down
 }
 class ToDoViewModel extends ViewModel<TodoEvent,TodoState>{
-  final state = TodoState(todo: 0);
+  final state = TodoState(todo: 99);
   @override
   void mapEventToHandler(Event event, commit) {
     switch(event.event){

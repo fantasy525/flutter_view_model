@@ -7,9 +7,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:should_rebuild/should_rebuild.dart';
 import 'package:view_model/base/view_model.dart';
 import 'package:view_model/pages/shop_detail_list.dart';
-import 'package:view_model/providers/home_view_model.dart';
-import 'package:view_model/providers/shop_detail_provider.dart';
-import 'package:view_model/providers/shop_provider.dart';
+import 'package:view_model/view_models/home_view_model.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -42,7 +41,10 @@ class _HomePageState extends State<HomePage> {
               RaisedButton(
                 child: Icon(Icons.add),
                 onPressed: (){
-                  Provider.of<HomeViewModel>(context,listen: false).dispatch(Event(event: HomeEvent.setBossAge,payload: "4"));
+                  Provider.of<HomeViewModel>(context,listen: false)
+                      .dispatch(Event(
+                      event: HomeEvent.setBossAge,
+                      payload: PayLoad()..putInt("age", ++counter)));
                 },
               )
             ],

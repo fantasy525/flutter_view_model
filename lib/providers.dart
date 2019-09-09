@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:view_model/Test.dart';
 
@@ -10,23 +11,30 @@ import 'base/view_model.dart';
 
 
 void main(){
-  Test test = Test();
-
-  Timer(Duration(seconds: 3),(){
-    test.dispatch(Event(event: TestEvent.add,payload: 4));
+  GetIt getIt = GetIt.instance;
+  getIt.registerFactory<A>((){
+    return A(getIt.get<B>());
   });
-
-  Timer(Duration(seconds: 6),(){
-    test.dispatch(Event(event: TestEvent.down,payload: 3));
+  getIt.registerFactory<B>((){
+    return B();
   });
-  test.addListener((){
-    print(test.state.counter);
-  });
+  getIt.get<A>().b.name = 'woshi';
+  print(getIt.get<A>().b.name);
 }
 
-class A extends Test{
-  hello(){
-    notifyListeners();
+
+
+class A {
+  String name = 'A';
+  B b;
+  A(B b){
+    this.b = b;
   }
+}
+class B {
+  B(){
+    print('BBB');
+  }
+  String name = 'B';
 }
 
