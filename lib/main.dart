@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:view_model/base/store.dart';
-import 'package:view_model/pages/home_page.dart';
+import 'package:view_model/pages/class_detail.dart';
 import 'package:get_it/get_it.dart';
-import 'package:view_model/view_models/home_view_model.dart';
+import 'package:view_model/view_models/class_detail_vm.dart';
 import 'base/view_model.dart';
 
 void main(){
 
   final store = Store(
       viewModels: {
-        HomeViewModel:(inject)=>HomeViewModel(),
+        ClassDetailVM: (_) => ClassDetailVM()
       }
   );
-  runApp(MyApp(store: store,));
+  runApp(MyApp(store: store));
 }
 
 
@@ -25,19 +25,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-
-
     return   MultiProvider(
       providers: [
-       ChangeNotifierProvider(builder: (context) => store.get<HomeViewModel>(),)
+        ChangeNotifierProvider.value(value: store.get<ClassDetailVM>())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomePage(),
+        home: ClassDetailPage(),
       ),
     );
   }

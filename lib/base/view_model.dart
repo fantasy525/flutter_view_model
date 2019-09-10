@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -8,31 +7,43 @@ typedef Commit = void Function();
 
 typedef OnSuccess = void Function();
 typedef OnError = void Function();
+
 ///[event] 枚举类型
 ///[payload] 类比安卓中的Bundle概念
 class Event {
   final dynamic event;
   final PayLoad payload;
-  Event({this.event,this.payload});
+  Event({this.event, this.payload});
 }
+
+class Committer {
+  final Commit commit;
+  final Completer completer;
+  Committer({this.commit, this.completer});
+}
+
 ///方便在派发事件时增加payload,这样在获取时可以有明确的类型提示
 class PayLoad {
+  Map<String, dynamic> _map = {};
 
-  Map<String,dynamic> _map = {};
+  _setValue(var k, var v) => _map[k] = v;
 
-  _setValue(var k, var v) =>  _map[k] = v;
+  _getValue(String k) {
+    if(!_map.containsKey(k)){
+      throw Exception("你使用$k在payload不存在，请检查你的key名字是否正确，或者确定key是否存在payload");
+    }
+    return _map[k];
+  }
 
-  _getValue(String k) => _map[k];
-
-  putInt(String k,int v) =>  _map[k] = v;
+  putInt(String k, int v) => _map[k] = v;
 
   putString(String k, String v) => _setValue(k, v);
 
   putBool(String k, bool v) => _setValue(k, v);
 
-  putList<V>(String k , List<V> v) => _setValue(k, v);
+  putList<V>(String k, List<V> v) => _setValue(k, v);
 
-  putMap<K,V>(String k, Map<K,V> v) => _setValue(k, v);
+  putMap<K, V>(String k, Map<K, V> v) => _setValue(k, v);
 
   int getInt(String k) => _getValue(k) as int;
 
@@ -51,8 +62,6 @@ class PayLoad {
   }
 }
 
-
-
 /// 所有view_model类的基类，通过[dispatch]一个[EnumEvent]事件来匹配到事件处理器
 /// 处理完后再[ViewModel._commit]/commit来提交更改到UI层
 /// 注意: view_model的实例只能通过dispatch事件触发UI层的更改，
@@ -61,24 +70,23 @@ class PayLoad {
 ///
 /// 建议 所有的ViewModel子类的实例方法都写为私有方法，不让UI层直接调用
 
-abstract class ViewModel<EnumEvent,State> with ChangeNotifier {
-
+abstract class ViewModel<EnumEvent, State> with ChangeNotifier {
   State state;
-
   /// event映射，从event映射到不同的事件handler去处理
   @protected
-  void mapEventToHandler(Event event,Commit commit,[Completer completer]);
+  void mapEventToHandler(Event event, Committer committer);
 
   /// 通知UI层的变化
   @protected
-  void _commit(){
+  void _commit() {
     super.notifyListeners();
   }
+
   /// UI层暴露的方法，通过此方法派发事件
-  Future<R> dispatch<R>(Event event){
+  Future<R> dispatch<R>(Event event) {
     Completer<R> _completer = Completer<R>();
     print('{event: ${event.event}, payload: ${event.payload}}');
-    mapEventToHandler(event,_commit,_completer);
+    mapEventToHandler(event, Committer(commit: _commit, completer: _completer));
     return _completer.future;
   }
 
@@ -87,7 +95,8 @@ abstract class ViewModel<EnumEvent,State> with ChangeNotifier {
   @override
   void notifyListeners() {
     // TODO: implement notifyListeners
-    throw ErrorSummary('ViewModel 不能直接调用 notifyListeners,你应该通过dispatch event来触发更新');
+    throw ErrorSummary(
+        'ViewModel 不能直接调用 notifyListeners,你应该通过dispatch event来触发更新');
   }
 
   @mustCallSuper
