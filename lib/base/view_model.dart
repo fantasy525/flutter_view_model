@@ -16,11 +16,6 @@ class Event {
   Event({this.event, this.payload});
 }
 
-class Committer {
-  final Commit commit;
-  Committer({this.commit});
-}
-
 ///方便在派发事件时增加payload,这样在获取时可以有明确的类型提示
 class PayLoad {
   Map<String, dynamic> _map = {};

@@ -44,7 +44,7 @@ class ClassDetailVM extends ViewModel<ClassDetailEvent,ClassDetailState>{
   @override
   ClassDetailState state = ClassDetailState();
   @override
-  void mapEventToHandler(Event event, Committer committer) {
+  void mapEventToHandler(Event event, Commit commit) {
     // TODO: implement mapEventToHandler
     switch(event.event){
       case ClassDetailEvent.setFinishCurrentPass:
