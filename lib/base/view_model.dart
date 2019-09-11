@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-typedef Commit = void Function();
+typedef Commit = Completer Function([bool notify]);
 
 typedef OnSuccess = void Function();
 typedef OnError = void Function();
@@ -18,8 +18,7 @@ class Event {
 
 class Committer {
   final Commit commit;
-  final Completer completer;
-  Committer({this.commit, this.completer});
+  Committer({this.commit});
 }
 
 ///方便在派发事件时增加payload,这样在获取时可以有明确的类型提示
@@ -74,19 +73,22 @@ abstract class ViewModel<EnumEvent, State> with ChangeNotifier {
   State state;
   /// event映射，从event映射到不同的事件handler去处理
   @protected
-  void mapEventToHandler(Event event, Committer committer);
+  void mapEventToHandler(Event event, Commit commit);
 
   /// 通知UI层的变化
   @protected
-  void _commit() {
-    super.notifyListeners();
+  void _commit([bool notify = true]) {
+    if(notify) super.notifyListeners();
   }
 
   /// UI层暴露的方法，通过此方法派发事件
   Future<R> dispatch<R>(Event event) {
-    Completer<R> _completer = Completer<R>();
+    Completer<R> _completer = Completer();
     print('{event: ${event.event}, payload: ${event.payload}}');
-    mapEventToHandler(event, Committer(commit: _commit, completer: _completer));
+    mapEventToHandler(event, ([notify = true]){
+      this._commit(notify);
+      return _completer;
+    });
     return _completer.future;
   }
 

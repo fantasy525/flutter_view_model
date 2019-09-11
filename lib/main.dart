@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:view_model/base/store.dart';
-import 'package:view_model/pages/class_detail.dart';
+import 'package:view_model/pages/class_detail_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:view_model/view_models/class_detail_vm.dart';
 import 'base/view_model.dart';

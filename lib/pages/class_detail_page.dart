@@ -8,7 +8,7 @@ import 'package:should_rebuild/should_rebuild.dart';
 import 'package:view_model/base/view_model.dart';
 import 'package:view_model/view_models/class_detail_vm.dart';
 
-import 'class_pass_list.dart';
+import 'class_pass_list_page.dart';
 
 
 class ClassDetailPage extends StatefulWidget {
