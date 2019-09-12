@@ -38,6 +38,9 @@ class _ClassDetailPageState extends State<ClassDetailPage> {
         child: SafeArea(
           child:Column(
             children: <Widget>[
+              Consumer<ClassDetailVM>(
+                builder: (_,vm,__) => Text("用户名${vm.userInfoVM.state.userName}"),
+              ),
              _buildList()
             ],
           ),

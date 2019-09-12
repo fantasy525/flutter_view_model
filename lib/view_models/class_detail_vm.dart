@@ -1,6 +1,7 @@
 // created by ZuoXiaoFei at 2019-09-10
 import 'package:flutter/material.dart';
 import 'package:view_model/base/view_model.dart';
+import 'package:view_model/view_models/user_info_view_model.dart';
 
 class ClassDetailState{
   final Map previewList =  {
@@ -41,6 +42,8 @@ enum ClassDetailEvent {
   setUnFinishCurrentPass
 }
 class ClassDetailVM extends ViewModel<ClassDetailEvent,ClassDetailState>{
+  UserInfoVM userInfoVM ;
+  ClassDetailVM({this.userInfoVM});
   @override
   ClassDetailState state = ClassDetailState();
   @override
@@ -48,24 +51,24 @@ class ClassDetailVM extends ViewModel<ClassDetailEvent,ClassDetailState>{
     // TODO: implement mapEventToHandler
     switch(event.event){
       case ClassDetailEvent.setFinishCurrentPass:
-        _setFinishCurrentPass(event,committer,1);
+        _setFinishCurrentPass(event,commit,1);
         break;
       case ClassDetailEvent.setUnFinishCurrentPass:
-        _setFinishCurrentPass(event,committer,0);
+        _setFinishCurrentPass(event,commit,0);
         break;
     }
   }
 
-  void _setFinishCurrentPass(Event event,Committer committer,int status){
+  void _setFinishCurrentPass(Event event,Commit commit,int status){
     int  flag = event.payload.getInt("flag");
     int passIndex = event.payload.getInt("passIndex");
     /// 课前
     if(flag == 1){
       _setPreviewStatus(passIndex,status);
-      committer.commit();
+      commit().complete();
     }else if(flag == 2){
       _setReviewStatus(passIndex,status);
-      committer.commit();
+      commit().complete();
     }
   }
   void _setReviewStatus(int passIndex,int status){
